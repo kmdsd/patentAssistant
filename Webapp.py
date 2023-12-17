@@ -19,9 +19,9 @@ import datetime
 import requests
 import urllib3
 
-import vector_db
-import join_llm
-import patentEngineering
+from src import vector_db
+from src import join_llm
+from src import patentEngineering
 
 # ====================================================================
 # 定数定義
