@@ -1,3 +1,4 @@
+
 #ライブラリの読み込み
 import os
 import platform
@@ -23,9 +24,6 @@ from src import vector_db
 from src import join_llm
 from src import patentEngineering
 
-# ====================================================================
-# 定数定義
-# ====================================================================
 # APIが社内(IIS)の場合
 proxies = {
     "http": None,
@@ -60,9 +58,7 @@ prompt = {
     'issue':'',
     'method':''
 }
-# ====================================================================
-# 関数定義
-# ====================================================================
+
 def get_similerIdea(query):
     # URLﾊﾟﾗﾒｰﾀ
     params = {
@@ -126,9 +122,6 @@ def mk_prompt():
     prompt['issue'] = st.text_area("課題")
     prompt['method'] = st.text_area("解決手段")
 
-# ====================================================================
-# メイン処理
-# ====================================================================
 # 画面の設定
 st.markdown(title)
 st.markdown(memo)
@@ -145,14 +138,12 @@ if is_db == '類似アイデアから':
         # 類似アイデアの抽出
         result = get_similerIdea(query)
         
-        # # 類似アイデアを10件に絞る
-        if len(result) > 1:
-            
-            result_array = result[:1]
-        
-        for patent_no in result_array:
+        for patent_no in result:
             print(patent_no)
-            patentEngineering.main(patent_no)
+            rslt = patentEngineering.main(patent_no)
+            print(f'エンジニアリング結果：{rslt}')
+            if rslt == True:
+                break
             
         # file engineering
         pages = load_page(dir_dict, new_line=True, half_space=True)
@@ -175,6 +166,8 @@ else:
     mk_prompt()
     button2 = st.button("文章生成") 
     
+print(mk_db_flg)
+    
 if button2 == True:
     input = f"# 入力\n## 発明の名称\n{prompt['name']}\n## 発明の概要\n{prompt['abstract']}\n## 課題\n{prompt['issue']}\n## 解決手段\n{prompt['method']}\n"
     query = f"# 命令文\n① 本発明の主題となる{prompt['name']}の構成について記載すべき構成要素の項目を抽出してください。\n② ①で抽出した項目についてひとつずつ詳細な説明文を生成してください。"
@@ -189,4 +182,4 @@ if button2 == True:
     result = joinllm.question(query)
     print(result) 
     st.text_area("回答",result,height=int(len(result)/1.5)) #引数に入力内容を渡せる
-    
+
