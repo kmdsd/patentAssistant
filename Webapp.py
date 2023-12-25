@@ -160,6 +160,9 @@ if is_db == '類似アイデアから':
         # make vectordb
         vectordb = vector_db.vector_db(chunkSize=chunkSize, persist_dir=dir_dict['persist_dir'])
         chroma_index = vectordb.mk_db(pages,start,end,units,wait)
+        
+        with open('./ini/idea.ini', mode='w') as f:
+            f.write(query)
 
     mk_prompt()
     button2 = st.button("文章生成")      
@@ -173,10 +176,10 @@ else:
     button2 = st.button("文章生成") 
     
 if button2 == True:
-    prompt = f"# 入力\n## 発明の名称\n{prompt['name']}\n## 発明の概要\n{prompt['abstract']}\n## 課題\n{prompt['issue']}\n## 解決手段\n{prompt['method']}\n"
-    query = '# 命令文\n① 本発明の主題となる画像形成装置の構成について記載すべき構成要素の項目を抽出してください。\n② ①で抽出した項目についてひとつずつ詳細な説明文を生成してください。'
+    input = f"# 入力\n## 発明の名称\n{prompt['name']}\n## 発明の概要\n{prompt['abstract']}\n## 課題\n{prompt['issue']}\n## 解決手段\n{prompt['method']}\n"
+    query = f"# 命令文\n① 本発明の主題となる{prompt['name']}の構成について記載すべき構成要素の項目を抽出してください。\n② ①で抽出した項目についてひとつずつ詳細な説明文を生成してください。"
     
-    print(prompt+query)
+    print(input+query)
     
     # join llm
     joinllm = join_llm.join_llm(chunkSize=chunkSize, persist_dir=dir_dict['persist_dir'])
